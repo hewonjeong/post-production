@@ -22,11 +22,13 @@ Layout.defaultProps = defaultProps
 
 const borderBottom = '2px solid hsl(0, 0%, 15%)'
 const backgroundColor = 'hsl(0, 0%, 20%)'
+const flex = { display: 'flex', flexDirection: 'column', overflow: 'hidden' }
+
 const style = {
   header: { flex: 'none', height: 40, backgroundColor, borderBottom },
   main: { flex: 1, display: 'flex' },
-  content: { flex: 1 },
-  aside: { flex: 'none', width: 400, backgroundColor },
+  content: { flex: 1, padding: 16, ...flex },
+  aside: { flex: 'none', width: 400, backgroundColor, ...flex },
   footer: { flex: 'none', height: 250 }
 }
 
