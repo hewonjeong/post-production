@@ -1,11 +1,16 @@
 {
   "name": "post-production",
-  "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "node-sass": "^4.9.4",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-scripts": "2.0.5"
+  },
+  "devDependencies": {
+    "husky": "^1.1.2",
+    "lint-staged": "^7.3.0",
+    "prettier": "^1.14.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -15,6 +20,17 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,json,scss}": [
+      "prettier --single-quote --no-semi --write",
+      "git add"
+    ]
   },
   "browserslist": [
     ">0.2%",
