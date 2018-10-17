@@ -3,9 +3,11 @@
   "private": true,
   "dependencies": {
     "node-sass": "^4.9.4",
+    "ramda": "^0.25.0",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
-    "react-scripts": "2.0.5"
+    "react-scripts": "2.0.5",
+    "videocontext": "^0.52.8"
   },
   "devDependencies": {
     "husky": "^1.1.2",
