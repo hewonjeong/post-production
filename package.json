@@ -27,7 +27,7 @@
     }
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,json,scss}": [
+    "src/**/*.{js,jsx,json,css,scss}": [
       "prettier --single-quote --no-semi --write",
       "git add"
     ]
