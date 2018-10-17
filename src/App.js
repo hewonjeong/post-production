@@ -2,34 +2,37 @@ import React from 'react'
 import Layout from './layout/Layout'
 import Preview from './modules/Preview'
 import Panel from './modules/Panel'
+import Track from './modules/Track'
 import crossFade from './videocontext/crossFade'
 
 export const { Provider, Consumer } = React.createContext()
 class App extends React.Component {
   canvas = React.createRef()
-  state = { assets: [] }
+  state = { assets: {} }
 
-  addAssets = assets => {
-    this.setState(
-      prev => ({ assets: [...prev.assets, ...assets] }),
-      this.playSample
-    )
+  addAssets = (assets, afterAdd) => {
+    const next = () => {
+      afterAdd()
+      this.playSample()
+    }
+
+    this.setState(prev => ({ assets: { ...prev.assets, ...assets } }), next)
   }
 
   playSample = () => {
-    crossFade(this.canvas.current)(this.state.assets.map(getURL))
+    const { assets } = this.state
+    const targetVideos = Object.values(assets).map(asset => asset.url)
+    crossFade(this.canvas.current)(targetVideos)
   }
 
   render() {
-    const value = { ...this.state, addAssets: this.addAssets }
-
     return (
-      <Provider value={value}>
+      <Provider value={{ ...this.state, addAssets: this.addAssets }}>
         <Layout
           header="Title"
           content={<Preview canvas={this.canvas} />}
           aside={<Panel />}
-          footer="Track"
+          footer={<Track />}
         />
       </Provider>
     )
@@ -37,6 +40,3 @@ class App extends React.Component {
 }
 
 export default App
-
-/* utils */
-const getURL = file => URL.createObjectURL(file)
