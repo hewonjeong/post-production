@@ -1,6 +1,6 @@
 import VideoContext from 'videocontext'
 
-export default canvas => ([video1, video2]) => {
+export default canvas => ([video1, video2], [onStart, onEnd]) => {
   const ctx = new VideoContext(canvas)
   const videoNode1 = ctx.video(video1)
   videoNode1.start(0)
@@ -17,5 +17,7 @@ export default canvas => ([video1, video2]) => {
   videoNode2.connect(crossFade)
   crossFade.connect(ctx.destination)
 
+  ctx.registerTimelineCallback(0, onStart)
+  ctx.registerCallback('ended', onEnd)
   ctx.play()
 }
