@@ -19,8 +19,12 @@ class Analyze extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const validate = ({ thumbnail, images, duration }) =>
-      !!thumbnail && images.length === Math.floor(duration) && !!duration
+    const validate = ({ thumbnail, images, duration }) => {
+      const hasCollectedImages =
+        this.props.skipCollectingImages ||
+        images.length === Math.floor(duration)
+      return !!thumbnail && !!duration && hasCollectedImages
+    }
 
     const isUpdated = !equals(this.state, prevState)
     const isValid = validate(this.state)
@@ -52,7 +56,9 @@ class Analyze extends React.Component {
     const canvas = this.getCanvas()
     const { duration, currentTime } = video
     toBlob(video, canvas, fn)
-    currentTime + 1 <= duration && video.currentTime++
+
+    const next = !this.props.skipCollectingImages && currentTime + 1 <= duration
+    next && video.currentTime++
   }
 
   render() {

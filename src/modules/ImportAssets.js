@@ -53,6 +53,7 @@ class ImportAssets extends Component {
           <Analyze
             {...asset}
             onAnalyze={this.addMetadata(filename)}
+            skipCollectingImages
             key={filename}
           />
         ))}
