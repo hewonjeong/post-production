@@ -8,26 +8,34 @@ import crossFade from './videocontext/crossFade'
 export const { Provider, Consumer } = React.createContext()
 class App extends React.Component {
   canvas = React.createRef()
-  state = { assets: {} }
+  state = { assets: {}, isPlaying: false }
 
-  addAssets = (assets, afterAdd) => {
-    const next = () => {
-      afterAdd()
-      this.playSample()
-    }
-
-    this.setState(prev => ({ assets: { ...prev.assets, ...assets } }), next)
+  addAssets = assets => {
+    this.setState(
+      prev => ({ assets: { ...prev.assets, ...assets } }),
+      this.playSample
+    )
   }
 
   playSample = () => {
     const { assets } = this.state
-    const targetVideos = Object.values(assets).map(asset => asset.url)
-    crossFade(this.canvas.current)(targetVideos)
+    const canvas = this.canvas.current
+    const videos = Object.values(assets).map(asset => asset.url)
+    const callback = Array.from({ length: 2 }, (_, i) => () =>
+      this.setState({ isPlaying: !i })
+    )
+    crossFade(canvas)(videos, callback)
   }
 
   render() {
+    const value = {
+      ...this.state,
+      canvas: this.canvas.current,
+      addAssets: this.addAssets
+    }
+
     return (
-      <Provider value={{ ...this.state, addAssets: this.addAssets }}>
+      <Provider value={value}>
         <Layout
           header="Title"
           content={<Preview canvas={this.canvas} />}

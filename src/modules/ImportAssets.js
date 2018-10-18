@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { func } from 'prop-types'
-import { equals } from 'ramda'
+import { equals, clone } from 'ramda'
 import FileInput from '../packages/components/FileInput'
 import Analyze from '../Analyze'
 
@@ -16,11 +16,12 @@ class ImportAssets extends Component {
     const isUpdated = !equals(this.state, prevState)
     const isValid = Object.values(assets).every(validate)
     const isFinished = hasAssets && isUpdated && isValid
-    isFinished && this.props.onImport(assets, this.clear)
+    const assetsClone = clone(assets)
+    isFinished && this.clear(() => this.props.onImport(assetsClone))
   }
 
-  clear = () => {
-    this.setState({ assets: {}, isLoading: false })
+  clear = callback => {
+    this.setState({ assets: {}, isLoading: false }, callback)
   }
 
   handleChange = event => {
@@ -52,6 +53,7 @@ class ImportAssets extends Component {
           <Analyze
             {...asset}
             onAnalyze={this.addMetadata(filename)}
+            skipCollectingImages
             key={filename}
           />
         ))}
