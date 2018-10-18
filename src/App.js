@@ -10,19 +10,18 @@ class App extends React.Component {
   canvas = React.createRef()
   state = { assets: {} }
 
-  addAssets = (assets, afterAdd) => {
-    const next = () => {
-      afterAdd()
-      this.playSample()
-    }
-
-    this.setState(prev => ({ assets: { ...prev.assets, ...assets } }), next)
+  addAssets = assets => {
+    this.setState(
+      prev => ({ assets: { ...prev.assets, ...assets } }),
+      this.playSample
+    )
   }
 
   playSample = () => {
     const { assets } = this.state
-    const targetVideos = Object.values(assets).map(asset => asset.url)
-    crossFade(this.canvas.current)(targetVideos)
+    const canvas = this.canvas.current
+    const videos = Object.values(assets).map(asset => asset.url)
+    crossFade(canvas)(videos)
   }
 
   render() {
