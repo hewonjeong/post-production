@@ -1,13 +1,11 @@
 import React from 'react'
 import { node } from 'prop-types'
 
-const propTypes = { header: node, content: node, aside: node, footer: node }
-const defaultProps = { header: null, content: null, aside: null, footer: null }
+const propTypes = { content: node, aside: node, footer: node }
+const defaultProps = { content: null, aside: null, footer: null }
 
-const Layout = ({ header, content, aside, footer }) => (
+const Layout = ({ content, aside, footer }) => (
   <>
-    <header style={style.header}>{header}</header>
-
     <main style={style.main}>
       <section style={style.content}>{content}</section>
       <aside style={style.aside}>{aside}</aside>

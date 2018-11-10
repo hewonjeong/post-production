@@ -37,7 +37,6 @@ class App extends React.Component {
     return (
       <Provider value={value}>
         <Layout
-          header="Title"
           content={<Preview canvas={this.canvas} />}
           aside={<Panel />}
           footer={<Track />}
