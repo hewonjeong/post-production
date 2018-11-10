@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { func } from 'prop-types'
 import { equals, clone } from 'ramda'
-import FileInput from '../packages/components/FileInput'
+import FileInput from '../components/FileInput'
 import Analyze from '../Analyze'
 
 class ImportAssets extends Component {
