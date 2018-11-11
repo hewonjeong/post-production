@@ -63,7 +63,8 @@ class Analyze extends React.Component {
 
   getPercent = () => {
     const { images, duration } = this.state
-    return Math.floor((images.length * 100) / Math.ceil(duration))
+    const percent = Math.floor((images.length * 100) / Math.ceil(duration)) || 0
+    return percent + '%'
   }
 
   render() {
@@ -72,7 +73,7 @@ class Analyze extends React.Component {
 
     return (
       <>
-        <Media thumbnail={thumbnail} overlay={this.getPercent() + '%'} />
+        <Media thumbnail={thumbnail} overlay={this.getPercent()} />
         <video ref={this.video} src={this.props.url} hidden />
         <canvas ref={this.canvas} hidden />
       </>

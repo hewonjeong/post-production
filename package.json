@@ -7,6 +7,7 @@
     "react": "^16.7.0-alpha.0",
     "react-dom": "^16.7.0-alpha.0",
     "react-scripts": "^2.1.1",
+    "uuid": "^3.3.2",
     "videocontext": "^0.52.10"
   },
   "devDependencies": {
