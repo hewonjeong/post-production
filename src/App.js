@@ -3,7 +3,6 @@ import Layout from './layout/Layout'
 import Preview from './modules/Preview'
 import Panel from './modules/Panel'
 import Track from './modules/Track'
-import crossFade from './videocontext/crossFade'
 
 export const { Provider, Consumer } = React.createContext()
 class App extends React.Component {
@@ -11,20 +10,7 @@ class App extends React.Component {
   state = { assets: {}, isPlaying: false }
 
   addAssets = assets => {
-    this.setState(
-      prev => ({ assets: { ...prev.assets, ...assets } }),
-      this.playSample
-    )
-  }
-
-  playSample = () => {
-    const { assets } = this.state
-    const canvas = this.canvas.current
-    const videos = Object.values(assets).map(asset => asset.url)
-    const callback = Array.from({ length: 2 }, (_, i) => () =>
-      this.setState({ isPlaying: !i })
-    )
-    crossFade(canvas)(videos, callback)
+    this.setState(prev => ({ assets: { ...prev.assets, ...assets } }))
   }
 
   render() {
