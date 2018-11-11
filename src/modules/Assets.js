@@ -1,14 +1,14 @@
 import React from 'react'
-import VideoList from '../components/VideoList'
+import VideoList from './VideoList'
 import { Consumer } from '../App'
 import ImportAssets from './ImportAssets'
 
 const Assets = () => (
   <Consumer>
-    {({ assets, addAssets }) => (
+    {({ assets, timeline, meta, addAssets, addTimeline }) => (
       <>
         <ImportAssets onImport={addAssets} />
-        <VideoList videos={assets} />
+        <VideoList videos={assets} meta={meta} addTimeline={addTimeline} />
       </>
     )}
   </Consumer>

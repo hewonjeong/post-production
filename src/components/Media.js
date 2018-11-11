@@ -16,16 +16,18 @@ class Media extends React.Component {
   getStyle = () => ({ ...style.component, height: (this.state.width * 9) / 16 })
 
   render() {
-    const { thumbnail, filename, duration, overlay } = this.props
+    const { thumbnail, filename, duration, overlay, onClick } = this.props
     return (
-      <article style={this.getStyle()} ref={this.component}>
+      <article ref={this.component} style={this.getStyle()} onClick={onClick}>
         <Image src={thumbnail} />
         {overlay ? (
           <p style={style.overlay}>{overlay}</p>
         ) : (
           <>
             <h1 style={style.filename}>{filename}</h1>
-            <p style={style.duration}>{Math.ceil(duration)}초</p>
+            <p style={style.duration}>
+              {duration && Math.ceil(duration) + '초'}
+            </p>
           </>
         )}
       </article>
