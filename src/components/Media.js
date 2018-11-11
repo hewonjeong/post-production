@@ -1,5 +1,9 @@
 import React from 'react'
 
+const Image = React.memo(({ src }) => (
+  <img src={src} alt="" style={style.image} />
+))
+
 class Media extends React.Component {
   component = React.createRef()
   state = { width: 0 }
@@ -15,7 +19,7 @@ class Media extends React.Component {
     const { thumbnail, filename, duration, overlay } = this.props
     return (
       <article style={this.getStyle()} ref={this.component}>
-        <img src={thumbnail} alt={filename} style={style.image} />
+        <Image src={thumbnail} />
         {overlay ? (
           <p style={style.overlay}>{overlay}</p>
         ) : (
