@@ -81,6 +81,9 @@ video {
 button,
 input,
 select {
+  background-color: transparent;
+  border-color: $color;
+  color: $color;
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;

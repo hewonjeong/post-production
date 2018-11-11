@@ -4,9 +4,12 @@ import { object } from 'prop-types'
 const propTypes = { canvas: object }
 const defaultProps = { canvas: {} }
 
-const Preview = ({ canvas }) => (
+const Preview = ({ canvasRef, isPlaying, onPlay, onPause }) => (
   <section style={style.component}>
-    <canvas ref={canvas} width="960" height="540" style={style.canvas} />
+    <canvas ref={canvasRef} width="960" height="540" style={style.canvas} />
+    <button onClick={isPlaying ? onPause : onPlay}>
+      {isPlaying ? '일시정지' : '재생'}
+    </button>
   </section>
 )
 

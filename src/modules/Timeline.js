@@ -14,7 +14,10 @@ const Timeline = () => (
           <section style={style.aside}>미디어 소스</section>
           <section style={style.tracks}>
             {isValid ? (
-              <Track clips={timeline.video} {...props} />
+              <>
+                <Track clips={timeline.video} {...props} />
+                <div style={style.bar(meta)} />
+              </>
             ) : (
               '미디어 소스를 끌어다 놓으세요.'
             )}
@@ -28,7 +31,15 @@ const Timeline = () => (
 const style = {
   timeline: { height: '100%', display: 'flex' },
   aside: { width: 120, flex: 'none' },
-  tracks: { overflowX: 'auto' }
+  tracks: { position: 'relative', overflowX: 'auto' },
+  bar: ({ current, total }) => ({
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: (current * 100) / total + '%',
+    width: 1,
+    backgroundColor: 'white'
+  })
 }
 
 export default Timeline
