@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { func } from 'prop-types'
 import { equals, clone } from 'ramda'
 import FileInput from '../components/FileInput'
-import Analyze from '../Analyze'
+import Analyze from './Analyze'
+import ListWrap from '../layout/ListWrap'
 
 class ImportAssets extends Component {
   static propTypes = { onImport: func }
@@ -42,6 +43,7 @@ class ImportAssets extends Component {
 
   render() {
     const { assets, isLoading } = this.state
+    const entries = Object.entries(assets)
 
     return (
       <>
@@ -49,14 +51,18 @@ class ImportAssets extends Component {
           {isLoading ? 'Adding videos...' : 'Add videos'}
         </FileInput>
 
-        {Object.entries(assets).map(([filename, asset]) => (
-          <Analyze
-            {...asset}
-            onAnalyze={this.addMetadata(filename)}
-            skipCollectingImages
-            key={filename}
-          />
-        ))}
+        {!!entries.length && (
+          <ListWrap>
+            {entries.map(([filename, asset]) => (
+              <Analyze
+                {...asset}
+                onAnalyze={this.addMetadata(filename)}
+                skipCollectingImages={false}
+                key={filename}
+              />
+            ))}
+          </ListWrap>
+        )}
       </>
     )
   }

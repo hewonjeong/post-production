@@ -1,0 +1,10 @@
+.ul {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 8px;
+}
+
+.li {
+  padding: 8px;
+  width: 50%;
+}
