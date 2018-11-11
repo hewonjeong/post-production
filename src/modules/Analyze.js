@@ -1,5 +1,6 @@
 import React from 'react'
 import { equals } from 'ramda'
+import Media from '../components/Media'
 
 class Analyze extends React.Component {
   video = React.createRef()
@@ -21,8 +22,7 @@ class Analyze extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const validate = ({ thumbnail, images, duration }) => {
       const hasCollectedImages =
-        this.props.skipCollectingImages ||
-        images.length === Math.floor(duration)
+        this.props.skipCollectingImages || images.length === Math.ceil(duration)
       return !!thumbnail && !!duration && hasCollectedImages
     }
 
@@ -61,9 +61,18 @@ class Analyze extends React.Component {
     next && video.currentTime++
   }
 
+  getPercent = () => {
+    const { images, duration } = this.state
+    return Math.floor((images.length * 100) / Math.ceil(duration))
+  }
+
   render() {
+    const { thumbnail } = this.state
+    const video = this.getVideo()
+
     return (
       <>
+        <Media thumbnail={thumbnail} overlay={this.getPercent() + '%'} />
         <video ref={this.video} src={this.props.url} hidden />
         <canvas ref={this.canvas} hidden />
       </>
