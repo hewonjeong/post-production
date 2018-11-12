@@ -1,0 +1,13 @@
+.item {
+  border: 1px solid transparent;
+}
+
+.item:not(.active):hover {
+  border: 1px solid hsl(0, 0%, 43%);
+}
+
+.active {
+  border: 1px solid white;
+  color: white;
+  cursor: default;
+}
