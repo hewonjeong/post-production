@@ -1,38 +1,32 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 const Image = React.memo(({ src }) => (
   <img src={src} alt="" style={style.image} />
 ))
 
-class Media extends React.Component {
-  component = React.createRef()
-  state = { width: 0 }
+const Media = ({ thumbnail, filename, duration, overlay, onClick }) => {
+  const getStyle = () => ({ ...style.component, height: (width * 9) / 16 })
+  const component = useRef(null)
+  const [width, setWidth] = useState(0)
 
-  componentDidMount() {
-    const { width } = this.component.current.getBoundingClientRect()
-    this.setState({ width })
-  }
+  useEffect(() => {
+    const { width } = component.current.getBoundingClientRect()
+    setWidth(width)
+  })
 
-  getStyle = () => ({ ...style.component, height: (this.state.width * 9) / 16 })
-
-  render() {
-    const { thumbnail, filename, duration, overlay, onClick } = this.props
-    return (
-      <article ref={this.component} style={this.getStyle()} onClick={onClick}>
-        <Image src={thumbnail} />
-        {overlay ? (
-          <p style={style.overlay}>{overlay}</p>
-        ) : (
-          <>
-            <h1 style={style.filename}>{filename}</h1>
-            <p style={style.duration}>
-              {duration && Math.ceil(duration) + '초'}
-            </p>
-          </>
-        )}
-      </article>
-    )
-  }
+  return (
+    <article ref={component} style={getStyle()} onClick={onClick}>
+      <Image src={thumbnail} />
+      {overlay ? (
+        <p style={style.overlay}>{overlay}</p>
+      ) : (
+        <>
+          <h1 style={style.filename}>{filename}</h1>
+          <p style={style.duration}>{duration && Math.ceil(duration) + '초'}</p>
+        </>
+      )}
+    </article>
+  )
 }
 
 const absolute = {
