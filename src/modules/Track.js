@@ -1,4 +1,6 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import getTotal from '../selector/getTotal'
 
 const THUMB_WIDTH = 80
 const THUMB_HEIGHT = 45
@@ -37,7 +39,11 @@ const style = {
   }
 }
 
-export default Track
+export default connect(({ assets, timeline, meta: { zoom } }, { type }) => {
+  const clips = timeline[type]
+  const total = getTotal(clips)
+  return { clips, assets, zoom, total, width: zoom * total }
+})(Track)
 
 /* helper */
 const getPosition = ({ start, end }, total) => ({

@@ -1,24 +1,23 @@
 import React from 'react'
-import { object } from 'prop-types'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import uuidv4 from 'uuid/v4'
+import * as timelineActions from '../actions/timelineActions'
 import ListWrap from '../layout/ListWrap'
 import Media from '../components/Media'
+import getTotal from '../selector/getTotal'
 
-const propTypes = { videos: object }
-const defaultProps = { videos: {} }
-
-const VideoList = ({ videos, meta, addTimeline }) => {
-  const entries = Object.entries(videos)
-  return entries.length ? (
+const VideoList = ({ entries, total, addTimeline }) =>
+  entries.length ? (
     <ListWrap>
       {entries.map(([key, video]) => {
         const onClick = () => {
           const clip = {
             videoKey: key,
-            start: meta.total,
-            end: meta.total + video.duration
+            start: total,
+            end: total + video.duration
           }
-          addTimeline('video')({ [uuidv4()]: clip })
+          addTimeline({ [uuidv4()]: clip }, 'video')
         }
         return <Media {...video} onClick={onClick} key={key} />
       })}
@@ -26,9 +25,11 @@ const VideoList = ({ videos, meta, addTimeline }) => {
   ) : (
     <p>파일을 추가하세요.</p>
   )
-}
 
-VideoList.propTypes = propTypes
-VideoList.defaultProps = defaultProps
-
-export default VideoList
+export default connect(
+  ({ assets, timeline, meta }) => ({
+    entries: Object.entries(assets),
+    total: getTotal(timeline.video)
+  }),
+  dispatch => bindActionCreators(timelineActions, dispatch)
+)(VideoList)

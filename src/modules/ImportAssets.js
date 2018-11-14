@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
-import { func } from 'prop-types'
+import { connect } from 'react-redux'
 import { equals, clone } from 'ramda'
+import { addAssets } from '../actions/assetsActions'
 import FileInput from '../components/FileInput'
 import Analyze from './Analyze'
 import ListWrap from '../layout/ListWrap'
 
 class ImportAssets extends Component {
-  static propTypes = { onImport: func }
-  static defaultProps = { onImport: args => console.log(args) }
   state = { assets: {}, isLoading: false }
 
   componentDidUpdate(prevProps, prevState) {
@@ -68,7 +67,10 @@ class ImportAssets extends Component {
   }
 }
 
-export default ImportAssets
+export default connect(
+  null,
+  dispatch => ({ onImport: assets => dispatch(addAssets(assets)) })
+)(ImportAssets)
 
 /* utils */
 const getURL = blob => URL.createObjectURL(blob)

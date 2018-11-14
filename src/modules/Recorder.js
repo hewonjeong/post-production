@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { Component } from 'react'
 
-class Recorder extends React.Component {
+class Recorder extends Component {
   state = { recordedBlobs: [], mediaRecorder: {}, isReady: false }
 
   componentDidUpdate(prevProps) {

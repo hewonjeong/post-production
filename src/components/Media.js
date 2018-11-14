@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { memo, useState, useEffect, useRef } from 'react'
 
-const Image = React.memo(({ src }) => (
-  <img src={src} alt="" style={style.image} />
-))
+const Image = memo(({ src }) => <img src={src} alt="" style={style.image} />)
 
 const Media = ({ thumbnail, filename, duration, overlay, onClick }) => {
   const getStyle = () => ({ ...style.component, height: (width * 9) / 16 })

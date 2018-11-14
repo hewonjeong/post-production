@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { Component, createRef } from 'react'
 import { equals } from 'ramda'
 import Media from '../components/Media'
 
-class Analyze extends React.Component {
-  video = React.createRef()
-  canvas = React.createRef()
+class Analyze extends Component {
+  video = createRef()
+  canvas = createRef()
   state = { thumbnail: '', images: [], duration: 0 }
 
   componentDidMount() {
