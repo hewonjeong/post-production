@@ -14,7 +14,8 @@ const style = {
   flexDirection: 'column',
   alignItems: 'center',
   height: '100%',
-  overflow: 'hidden'
+  overflow: 'hidden',
+  position: 'relative'
 }
 
 export default Preview
