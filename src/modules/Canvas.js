@@ -1,12 +1,14 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import VideoContext from 'videocontext'
 import * as metaActions from '../actions/metaActions'
 import getTotal from '../selector/getTotal'
+import TextCanvas from './TextCanvas'
 
-const Canvas = ({ video, assets, timestamp, isPlaying, current, ...rest }) => {
-  const { total, pause, setCurrent } = rest
+const Canvas = ({ timeline, assets, meta, total, pause, setCurrent }) => {
+  const [textCanvas, setTextCanvas] = useState({})
+  const { timestamp, isPlaying, current } = meta
   const canvasRef = useRef()
   const ctx = useRef()
   const raf = useRef()
@@ -45,33 +47,42 @@ const Canvas = ({ video, assets, timestamp, isPlaying, current, ...rest }) => {
 
   useEffect(
     () => {
-      Object.values(video).forEach(clip => {
+      Object.values(timeline.video).forEach(clip => {
         const videoNode = ctx.current.video(assets[clip.videoKey].url)
         videoNode.connect(ctx.current.destination)
         videoNode.start(clip.start)
         videoNode.stop(clip.end)
       })
+
+      Object.entries(timeline.text).forEach(([key, clip]) => {
+        const canvasNode = ctx.current.canvas(textCanvas[key])
+        canvasNode.connect(ctx.current.destination)
+        canvasNode.start(clip.start)
+        canvasNode.stop(clip.end)
+      })
     },
-    [timestamp]
+    [timestamp, textCanvas]
   )
 
-  return <canvas ref={canvasRef} width="960" height="540" style={style} />
+  return (
+    <>
+      <canvas ref={canvasRef} width="960" height="540" style={style} />
+      {Object.entries(timeline.text).map(([key, clip]) => {
+        const handleFill = ref => setTextCanvas({ ...textCanvas, [key]: ref })
+        return <TextCanvas {...clip} onFill={handleFill} key={key} />
+      })}
+    </>
+  )
 }
 
 const style = { borderRadius: 4, maxWidth: '100%', maxHeight: '100%' }
 
 export default connect(
-  ({
+  ({ assets, timeline, meta }) => ({
     assets,
-    timeline: { video },
-    meta: { timestamp, isPlaying, current }
-  }) => ({
-    video,
-    assets,
-    timestamp,
-    isPlaying,
-    current,
-    total: getTotal(video)
+    timeline,
+    meta,
+    total: getTotal(timeline)
   }),
   dispatch => bindActionCreators(metaActions, dispatch)
 )(Canvas)

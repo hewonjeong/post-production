@@ -12,6 +12,6 @@ const style = {
   width: 1
 }
 
-export default connect(({ timeline: { video }, meta: { current } }) => ({
-  left: (current * 100) / getTotal(video) + '%'
+export default connect(({ timeline, meta: { current } }) => ({
+  left: (current * 100) / getTotal(timeline) + '%'
 }))(Bar)

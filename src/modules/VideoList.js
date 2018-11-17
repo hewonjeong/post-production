@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import uuidv4 from 'uuid/v4'
 import * as timelineActions from '../actions/timelineActions'
 import ListWrap from '../layout/ListWrap'
 import Media from '../components/Media'
@@ -17,7 +16,7 @@ const VideoList = ({ entries, total, addTimeline }) =>
             start: total,
             end: total + video.duration
           }
-          addTimeline({ [uuidv4()]: clip }, 'video')
+          addTimeline({ type: 'video', clip })
         }
         return <Media {...video} onClick={onClick} key={key} />
       })}
@@ -29,7 +28,7 @@ const VideoList = ({ entries, total, addTimeline }) =>
 export default connect(
   ({ assets, timeline, meta }) => ({
     entries: Object.entries(assets),
-    total: getTotal(timeline.video)
+    total: getTotal(timeline)
   }),
   dispatch => bindActionCreators(timelineActions, dispatch)
 )(VideoList)

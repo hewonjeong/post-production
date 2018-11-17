@@ -39,7 +39,12 @@ const absolute = {
 
 const flex = { display: 'flex', justifyContent: 'center', alignItems: 'center' }
 const style = {
-  component: { borderRadius: 4, overflow: 'hidden', position: 'relative' },
+  component: {
+    borderRadius: 4,
+    overflow: 'hidden',
+    position: 'relative',
+    cursor: 'pointer'
+  },
   image: { width: '100%', height: 'auto' },
   filename: { ...absolute, top: 'auto' },
   duration: { ...absolute, bottom: 'auto', right: 'auto' },
