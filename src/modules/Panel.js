@@ -10,13 +10,14 @@ const Effects = [
       {
         name: 'A타입 (왼쪽)',
         fn: addTimeline => {
+          const start = Number(prompt('시작할 지점을 입력하세요. (초)'))
           const clip = {
             text: [
               'GOM MIX Pro',
-              'Easily and quickly complete high-quality videos'
+              'Easily and quickly complete high-quality video'
             ],
-            start: 0,
-            end: 4
+            start,
+            end: start + 3
           }
           addTimeline({ type: 'text', clip })
         }
