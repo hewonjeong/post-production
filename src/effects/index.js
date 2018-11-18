@@ -5,7 +5,8 @@ export default [
       {
         name: 'A타입 (왼쪽)',
         fn: ({ addClip }) => {
-          const start = Number(prompt('시작할 지점을 입력하세요. (초)'))
+          const input = prompt('시작할 지점을 입력하세요. (초)')
+          const start = input && Number(input)
           const clip = {
             text: [
               'GOM MIX Pro',
@@ -14,7 +15,7 @@ export default [
             start,
             end: start + 3
           }
-          addClip({ type: 'text', clip })
+          Number.isInteger(start) && addClip({ type: 'text', clip })
         }
       }
     ]
