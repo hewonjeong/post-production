@@ -1,1 +1,1 @@
-export const addTimeline = payload => ({ type: 'timeline/add', payload })
+export const addClip = payload => ({ type: 'clip/add', payload })

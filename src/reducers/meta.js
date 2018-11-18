@@ -3,7 +3,7 @@ import { combineReducers } from 'redux'
 // 마지막으로 편집된 시간 (이를 기반으로 캔버스 업데이트)
 const timestamp = (state = 0, action) => {
   switch (action.type) {
-    case 'timeline/add':
+    case 'clip/add':
       return Date.now()
 
     default:

@@ -5,11 +5,11 @@ import * as timelineActions from '../actions/timelineActions'
 import ListWrap from '../layout/ListWrap'
 import Media from '../components/Media'
 
-const EffectList = ({ list, addTimeline }) => (
+const EffectList = ({ list, addClip }) => (
   <ListWrap>
     {list.map(({ name, fn }) => {
       const onClick = () => {
-        fn(addTimeline)
+        fn(addClip)
       }
       return <Media overlay={name} onClick={onClick} key={name} />
     })}

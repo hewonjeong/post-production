@@ -4,7 +4,7 @@ export default [
     list: [
       {
         name: 'A타입 (왼쪽)',
-        fn: addTimeline => {
+        fn: addClip => {
           const start = Number(prompt('시작할 지점을 입력하세요. (초)'))
           const clip = {
             text: [
@@ -14,7 +14,7 @@ export default [
             start,
             end: start + 3
           }
-          addTimeline({ type: 'text', clip })
+          addClip({ type: 'text', clip })
         }
       }
     ]

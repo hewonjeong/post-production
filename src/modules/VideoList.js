@@ -6,7 +6,7 @@ import ListWrap from '../layout/ListWrap'
 import Media from '../components/Media'
 import { getLastEnd } from '../selector/getTotal'
 
-const VideoList = ({ entries, total, addTimeline }) =>
+const VideoList = ({ entries, total, addClip }) =>
   entries.length ? (
     <ListWrap>
       {entries.map(([key, video]) => {
@@ -16,7 +16,7 @@ const VideoList = ({ entries, total, addTimeline }) =>
             start: total,
             end: total + video.duration
           }
-          addTimeline({ type: 'video', clip })
+          addClip({ type: 'video', clip })
         }
         return <Media {...video} onClick={onClick} key={key} />
       })}
