@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import VideoContext from 'videocontext'
 import * as metaActions from '../actions/metaActions'
 import getTotal from '../selector/getTotal'
+import filters from '../effects/filters'
 import TextCanvas from './TextCanvas'
 
 const Canvas = ({ timeline, assets, meta, total, pause, setCurrent }) => {
@@ -47,19 +48,34 @@ const Canvas = ({ timeline, assets, meta, total, pause, setCurrent }) => {
 
   useEffect(
     () => {
-      Object.values(timeline.video).forEach(clip => {
-        const videoNode = ctx.current.video(assets[clip.videoKey].url)
-        videoNode.connect(ctx.current.destination)
-        videoNode.start(clip.start)
-        videoNode.stop(clip.end)
-      })
+      try {
+        Object.values(timeline.video).forEach(clip => {
+          const videoNode = ctx.current.video(assets[clip.videoKey].url)
+          videoNode.connect(ctx.current.destination)
+          videoNode.start(clip.start)
+          videoNode.stop(clip.end)
 
-      Object.entries(timeline.text).forEach(([key, clip]) => {
-        const canvasNode = ctx.current.canvas(textCanvas[key])
-        canvasNode.connect(ctx.current.destination)
-        canvasNode.start(clip.start)
-        canvasNode.stop(clip.end)
-      })
+          clip.filter &&
+            filters[clip.filter] &&
+            (() => {
+              const sepiaEffect = ctx.current.effect(filters[clip.filter])
+              sepiaEffect.outputMix = [1.25, 1.18, 0.9]
+              videoNode.connect(sepiaEffect)
+              sepiaEffect.connect(ctx.current.destination)
+            })()
+        })
+
+        Object.entries(timeline.text).forEach(([key, clip]) => {
+          const canvasNode = ctx.current.canvas(textCanvas[key])
+          canvasNode.connect(ctx.current.destination)
+          canvasNode.start(clip.start)
+          canvasNode.stop(clip.end)
+        })
+      } catch (error) {
+        console.group('VideoContext Error')
+        console.error(error)
+        console.groupEnd()
+      }
     },
     [timestamp, textCanvas]
   )

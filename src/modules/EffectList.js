@@ -5,11 +5,11 @@ import * as timelineActions from '../actions/timelineActions'
 import ListWrap from '../layout/ListWrap'
 import Media from '../components/Media'
 
-const EffectList = ({ list, addClip }) => (
+const EffectList = ({ list, addClip, editClip, firstVideoKey }) => (
   <ListWrap>
     {list.map(({ name, fn }) => {
       const onClick = () => {
-        fn(addClip)
+        fn({ addClip, editClip }, firstVideoKey)
       }
       return <Media overlay={name} onClick={onClick} key={name} />
     })}
@@ -17,6 +17,6 @@ const EffectList = ({ list, addClip }) => (
 )
 
 export default connect(
-  null,
+  ({ timeline }) => ({ firstVideoKey: Object.keys(timeline.video)[0] }),
   dispatch => bindActionCreators(timelineActions, dispatch)
 )(EffectList)

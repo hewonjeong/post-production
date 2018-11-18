@@ -4,7 +4,7 @@ export default [
     list: [
       {
         name: 'A타입 (왼쪽)',
-        fn: addClip => {
+        fn: ({ addClip }) => {
           const start = Number(prompt('시작할 지점을 입력하세요. (초)'))
           const clip = {
             text: [
@@ -19,6 +19,21 @@ export default [
       }
     ]
   },
-  { name: '필터', list: [{ name: '흑백', fn: () => {} }] },
+  {
+    name: '필터',
+    list: [
+      {
+        name: '모노크롬',
+        fn: ({ editClip }, videoKey) => {
+          videoKey &&
+            editClip({
+              type: 'video',
+              key: videoKey,
+              clip: { filter: 'monochrome' }
+            })
+        }
+      }
+    ]
+  },
   { name: '영상 전환', list: [{ name: '크로스페이드', fn: () => {} }] }
 ]
