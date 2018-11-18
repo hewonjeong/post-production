@@ -8,6 +8,17 @@ const video = (state = {}, action) => {
         ? { ...state, [uuidv4()]: action.payload.clip }
         : state
 
+    case 'clip/edit':
+      return action.payload.type === 'video'
+        ? {
+            ...state,
+            [action.payload.key]: {
+              ...state[action.payload.key],
+              ...action.payload.clip
+            }
+          }
+        : state
+
     default:
       return state
   }

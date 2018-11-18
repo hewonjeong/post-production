@@ -4,6 +4,7 @@ import { combineReducers } from 'redux'
 const timestamp = (state = 0, action) => {
   switch (action.type) {
     case 'clip/add':
+    case 'clip/edit':
       return Date.now()
 
     default:
