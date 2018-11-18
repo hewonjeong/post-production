@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import * as timelineActions from '../actions/timelineActions'
 import ListWrap from '../layout/ListWrap'
 import Media from '../components/Media'
-import getTotal from '../selector/getTotal'
+import { getLastEnd } from '../selector/getTotal'
 
 const VideoList = ({ entries, total, addTimeline }) =>
   entries.length ? (
@@ -28,7 +28,7 @@ const VideoList = ({ entries, total, addTimeline }) =>
 export default connect(
   ({ assets, timeline, meta }) => ({
     entries: Object.entries(assets),
-    total: getTotal(timeline)
+    total: getLastEnd(timeline.video)
   }),
   dispatch => bindActionCreators(timelineActions, dispatch)
 )(VideoList)
