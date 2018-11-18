@@ -1,4 +1,4 @@
-export default ({ video, audio, text }) => getLastEnd(video)
+export default timeline => Math.max(...Object.values(timeline).map(getLastEnd))
 
 export const getLastEnd = (object = {}) => {
   const values = Object.values(object).map(o => o.end)
