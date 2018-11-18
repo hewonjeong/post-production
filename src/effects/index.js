@@ -25,16 +25,31 @@ export default [
     list: [
       {
         name: '모노크롬',
-        fn: ({ editClip }, videoKey) => {
-          videoKey &&
-            editClip({
-              type: 'video',
-              key: videoKey,
-              clip: { filter: 'monochrome' }
-            })
+        fn: ({ editClip }, [key]) => {
+          key &&
+            editClip({ type: 'video', key, clip: { filter: 'monochrome' } })
         }
       }
     ]
   },
-  { name: '영상 전환', list: [{ name: '크로스페이드', fn: () => {} }] }
+  {
+    name: '영상 전환',
+    list: [
+      {
+        name: '크로스페이드',
+        fn: ({ editClip, addTransition }, [prev, next]) => {
+          prev &&
+            next &&
+            (() => {
+              editClip({
+                type: 'video',
+                key: next,
+                clip: prev => ({ start: prev.start - 2, end: prev.end - 2 })
+              })
+              addTransition({ prev, next, name: 'crossFade' })
+            })()
+        }
+      }
+    ]
+  }
 ]

@@ -12,10 +12,13 @@ const video = (state = {}, action) => {
       return action.payload.type === 'video'
         ? {
             ...state,
-            [action.payload.key]: {
-              ...state[action.payload.key],
-              ...action.payload.clip
-            }
+            [action.payload.key]: Object.assign(
+              {},
+              state[action.payload.key],
+              typeof action.payload.clip === 'function'
+                ? action.payload.clip(state[action.payload.key])
+                : action.payload.clip
+            )
           }
         : state
 
