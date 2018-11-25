@@ -80,16 +80,17 @@ const Canvas = ({ assets, timeline, transitions, meta, total, ...rest }) => {
           canvasNode.stop(clip.end)
         }
 
-        const notHasTransition = ([key]) => {
+        const noTransition = ([key]) => {
           const inTransition = ({ prev, next }) => [prev, next].includes(key)
           return Object.values(transitions).findIndex(inTransition) === -1
         }
 
-        Object.entries(transitions).forEach(connectTransition)
-        Object.entries(timeline.text).forEach(connectCanvas)
-        Object.entries(timeline.video)
-          .filter(notHasTransition)
+        const { video, text } = timeline
+        Object.entries(video)
+          .filter(noTransition)
           .forEach(connectVideo)
+        Object.entries(transitions).forEach(connectTransition)
+        Object.entries(text).forEach(connectCanvas)
       } catch (error) {
         console.group('VideoContext Error')
         console.error(error)
