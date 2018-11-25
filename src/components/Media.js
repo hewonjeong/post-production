@@ -6,7 +6,7 @@ const Image = memo(({ src }) => <img src={src} alt="" style={style.image} />)
 
 const Media = ({ thumbnail, filename, duration, overlay, ...rest }) => {
   const [width, ref] = useWidth()
-  const { onClick, connectDragSource, isDragging } = rest
+  const { onClick, connectDragSource } = rest
   const getStyle = () => ({ ...style.component, height: (width * 9) / 16 })
 
   return (

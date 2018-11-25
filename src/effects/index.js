@@ -17,14 +17,12 @@ export default [
     ]
   },
   {
+    type: 'filter',
     name: '필터',
     list: [
       {
         name: '모노크롬',
-        fn: ({ editClip }, [key]) => {
-          key &&
-            editClip({ type: 'video', key, clip: { filter: 'monochrome' } })
-        }
+        clip: { filter: 'monochrome' }
       }
     ]
   },

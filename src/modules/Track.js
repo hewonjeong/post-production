@@ -7,10 +7,7 @@ import flow from 'lodash/fp/flow'
 import * as timelineActions from '../actions/timelineActions'
 import sizes from '../constants/sizes'
 import { getLastEnd } from '../selector/getTotal'
-
-const Clip = ({ style: variant, children }) => (
-  <div style={{ ...style.clip, ...variant }}>{children}</div>
-)
+import Clip from './Clip'
 
 const Track = ({ type, clips, assets, zoom, total, width, ...rest }) => {
   const { connectDropTarget, isOver, canDrop } = rest
@@ -37,19 +34,18 @@ const Track = ({ type, clips, assets, zoom, total, width, ...rest }) => {
             </article>
           )
 
+          const style = {
+            left: (100 * clip.start) / total + '%',
+            width: (clip.end - clip.start) * zoom
+          }
+
           const clipContent = cond([
             [equals('video'), renderVideoClip],
             [equals('text'), renderTextClip]
           ])(type)
 
           return (
-            <Clip
-              style={{
-                left: (100 * clip.start) / total + '%',
-                width: (clip.end - clip.start) * zoom
-              }}
-              key={key}
-            >
+            <Clip type={type} clipKey={key} style={style} key={key}>
               {clipContent}
             </Clip>
           )
@@ -62,23 +58,7 @@ const Track = ({ type, clips, assets, zoom, total, width, ...rest }) => {
 const style = {
   track: { position: 'relative', height: sizes.clip.height },
   clips: { position: 'absolute' },
-
-  clip: {
-    position: 'absolute',
-    display: 'flex',
-    flexWrap: 'nowrap',
-    border: '3px solid orange',
-    borderRadius: 4,
-    height: sizes.clip.height,
-    overflow: 'hidden'
-  },
-
-  text: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap'
-  },
-
+  text: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   backdrop: {
     position: 'absolute',
     top: 0,
@@ -106,7 +86,7 @@ const trackTarget = {
 
 const collect = (connect, monitor) => ({
   connectDropTarget: connect.dropTarget(),
-  isOver: monitor.isOver(),
+  isOver: monitor.isOver({ shallow: true }),
   canDrop: monitor.canDrop()
 })
 
