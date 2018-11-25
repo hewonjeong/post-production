@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { DropTarget } from 'react-dnd'
@@ -8,16 +8,18 @@ import * as timelineActions from '../actions/timelineActions'
 import sizes from '../constants/sizes'
 import { getLastEnd } from '../selector/getTotal'
 import Clip from './Clip'
+import Transition from './Transition'
 
 const Track = ({ type, clips, assets, zoom, total, width, ...rest }) => {
   const { connectDropTarget, isOver, canDrop } = rest
   const backgroundColor = isOver ? (canDrop ? 'green' : 'red') : 'black'
+  const entries = Object.entries(clips)
 
   return connectDropTarget(
     <div style={style.track}>
       <div style={{ ...style.backdrop, backgroundColor }} />
       <div style={{ ...style.clips, width }}>
-        {Object.entries(clips).map(([key, clip]) => {
+        {entries.map(([key, clip], index) => {
           const renderVideoClip = () =>
             assets[clip.videoKey].images
               .filter((_, index) => !(index % (sizes.clip.width / zoom)))
@@ -34,10 +36,8 @@ const Track = ({ type, clips, assets, zoom, total, width, ...rest }) => {
             </article>
           )
 
-          const style = {
-            left: (100 * clip.start) / total + '%',
-            width: (clip.end - clip.start) * zoom
-          }
+          const left = (100 * clip.start) / total + '%'
+          const width = (clip.end - clip.start) * zoom
 
           const clipContent = cond([
             [equals('video'), renderVideoClip],
@@ -45,9 +45,18 @@ const Track = ({ type, clips, assets, zoom, total, width, ...rest }) => {
           ])(type)
 
           return (
-            <Clip type={type} clipKey={key} style={style} key={key}>
-              {clipContent}
-            </Clip>
+            <Fragment key={key}>
+              <Clip type={type} clipKey={key} style={{ left, width }}>
+                {clipContent}
+              </Clip>
+              {type === 'video' && index < entries.length - 1 && (
+                <Transition
+                  clipKey={key}
+                  nextKey={entries[index + 1][0]}
+                  style={{ left: width - zoom, width: 2 * zoom }}
+                />
+              )}
+            </Fragment>
           )
         })}
       </div>
