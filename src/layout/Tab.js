@@ -19,7 +19,10 @@ const Tab = ({ list = [] }) => {
   })
 
   const contents = list.map(({ name, component }) => (
-    <article style={{ display: current !== name && 'none' }} key={name}>
+    <article
+      className={classNames(current !== name && style.hidden)}
+      key={name}
+    >
       {component}
     </article>
   ))

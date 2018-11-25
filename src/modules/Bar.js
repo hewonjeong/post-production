@@ -1,17 +1,6 @@
-import React from 'react'
 import { connect } from 'react-redux'
-import getTotal from '../selector/getTotal'
+import Bar from '../components/Bar'
 
-const Bar = ({ left }) => <div style={{ ...style, left }} />
-
-const style = {
-  backgroundColor: 'white',
-  position: 'absolute',
-  top: 0,
-  bottom: 0,
-  width: 1
-}
-
-export default connect(({ timeline, meta: { current } }) => ({
-  left: (current * 100) / getTotal(timeline) + '%'
+export default connect(({ meta: { current, zoom } }) => ({
+  left: Math.round(current * zoom)
 }))(Bar)

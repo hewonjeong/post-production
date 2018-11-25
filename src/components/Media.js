@@ -1,27 +1,30 @@
-import React, { memo, useState, useEffect, useRef } from 'react'
+import React, { memo } from 'react'
+import { DragSource } from 'react-dnd'
+import useWidth from '../hooks/useWidth'
 
 const Image = memo(({ src }) => <img src={src} alt="" style={style.image} />)
 
-const Media = ({ thumbnail, filename, duration, overlay, onClick }) => {
+const Media = ({ thumbnail, filename, duration, overlay, ...rest }) => {
+  const [width, ref] = useWidth()
+  const { onClick, connectDragSource } = rest
   const getStyle = () => ({ ...style.component, height: (width * 9) / 16 })
-  const component = useRef(null)
-  const [width, setWidth] = useState(0)
-
-  useEffect(() => {
-    const { width } = component.current.getBoundingClientRect()
-    setWidth(width)
-  })
 
   return (
-    <article ref={component} style={getStyle()} onClick={onClick}>
-      <Image src={thumbnail} />
-      {overlay ? (
-        <p style={style.overlay}>{overlay}</p>
-      ) : (
-        <>
-          <h1 style={style.filename}>{filename}</h1>
-          <p style={style.duration}>{duration && Math.ceil(duration) + '초'}</p>
-        </>
+    <article ref={ref} onClick={onClick}>
+      {connectDragSource(
+        <div style={getStyle()}>
+          <Image src={thumbnail} />
+          {overlay ? (
+            <p style={style.overlay}>{overlay}</p>
+          ) : (
+            <>
+              <h1 style={style.filename}>{filename}</h1>
+              <p style={style.duration}>
+                {duration && Math.ceil(duration) + '초'}
+              </p>
+            </>
+          )}
+        </div>
       )}
     </article>
   )
@@ -51,4 +54,15 @@ const style = {
   overlay: { ...absolute, ...flex }
 }
 
-export default Media
+const mediaSource = {
+  beginDrag: props => {
+    return props
+  }
+}
+
+const collect = (connect, monitor) => ({
+  connectDragSource: connect.dragSource(),
+  isDragging: monitor.isDragging()
+})
+
+export default DragSource('media', mediaSource, collect)(Media)
