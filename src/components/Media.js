@@ -56,7 +56,6 @@ const style = {
 
 const mediaSource = {
   beginDrag: props => {
-    console.log(props)
     return props
   }
 }

@@ -1,21 +1,24 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { DropTarget } from 'react-dnd'
 import { cond, equals } from 'ramda'
 import flow from 'lodash/fp/flow'
+import * as timelineActions from '../actions/timelineActions'
 import sizes from '../constants/sizes'
 import { getLastEnd } from '../selector/getTotal'
 
-const Clip = ({ position, children }) => (
-  <div style={{ ...style.clip, ...position }}>{children}</div>
+const Clip = ({ style: variant, children }) => (
+  <div style={{ ...style.clip, ...variant }}>{children}</div>
 )
 
 const Track = ({ type, clips, assets, zoom, total, width, ...rest }) => {
   const { connectDropTarget, isOver, canDrop } = rest
+  const backgroundColor = isOver ? (canDrop ? 'green' : 'red') : 'black'
 
   return connectDropTarget(
     <div style={style.track}>
-      <div style={style.backdrop} />
+      <div style={{ ...style.backdrop, backgroundColor }} />
       <div style={{ ...style.clips, width }}>
         {Object.entries(clips).map(([key, clip]) => {
           const renderVideoClip = () =>
@@ -40,7 +43,13 @@ const Track = ({ type, clips, assets, zoom, total, width, ...rest }) => {
           ])(type)
 
           return (
-            <Clip position={getPosition(clip, total)} key={key}>
+            <Clip
+              style={{
+                left: (100 * clip.start) / total + '%',
+                width: (clip.end - clip.start) * zoom
+              }}
+              key={key}
+            >
               {clipContent}
             </Clip>
           )
@@ -71,7 +80,6 @@ const style = {
   },
 
   backdrop: {
-    backgroundColor: 'black',
     position: 'absolute',
     top: 0,
     bottom: 0,
@@ -80,28 +88,36 @@ const style = {
   }
 }
 
-const mediaTarget = {
-  drop: props => {
-    console.log(props)
+const trackTarget = {
+  canDrop: (props, monitor) => {
+    const item = monitor.getItem()
+    return props.type === item.type
+  },
+  drop: (props, monitor) => {
+    const item = monitor.getItem()
+    const start =
+      props.type === 'video'
+        ? props.total
+        : (monitor.getClientOffset().x - sizes.timeline.offset) / 40
+    const clip = item.getClip(start)
+    props.addClip({ type: props.type, clip })
   }
 }
 
 const collect = (connect, monitor) => ({
   connectDropTarget: connect.dropTarget(),
-  isOver: monitor.isOver()
+  isOver: monitor.isOver(),
+  canDrop: monitor.canDrop()
 })
 
 export default flow(
-  DropTarget('media', mediaTarget, collect),
-  connect(({ assets, timeline, meta: { zoom } }, { type }) => {
-    const clips = timeline[type]
-    const total = getLastEnd(clips)
-    return { clips, assets, zoom, total, width: zoom * total }
-  })
+  DropTarget('media', trackTarget, collect),
+  connect(
+    ({ assets, timeline, meta: { zoom } }, { type }) => {
+      const clips = timeline[type]
+      const total = getLastEnd(clips)
+      return { clips, assets, zoom, total, width: zoom * total }
+    },
+    dispatch => bindActionCreators(timelineActions, dispatch)
+  )
 )(Track)
-
-/* helper */
-const getPosition = ({ start, end }, total) => ({
-  left: (start * 100) / total + '%',
-  right: 100 - (end * 100) / total + '%'
-})

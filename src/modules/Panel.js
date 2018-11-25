@@ -8,9 +8,9 @@ const Panel = () => (
   <Tab
     list={[
       { name: '미디어 소스', component: <Assets /> },
-      ...effects.map(({ name, list }) => ({
+      ...effects.map(({ type, name, list }) => ({
         name,
-        component: <EffectList list={list} />
+        component: <EffectList type={type} list={list} />
       }))
     ]}
   />

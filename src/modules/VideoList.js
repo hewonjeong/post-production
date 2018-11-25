@@ -10,15 +10,13 @@ const VideoList = ({ entries, total, addClip }) =>
   entries.length ? (
     <ListWrap>
       {entries.map(([key, video]) => {
-        const onClick = () => {
-          const clip = {
-            videoKey: key,
-            start: total,
-            end: total + video.duration
-          }
-          addClip({ type: 'video', clip })
-        }
-        return <Media {...video} onClick={onClick} key={key} />
+        const getClip = start => ({
+          videoKey: key,
+          start: start,
+          end: start + video.duration
+        })
+
+        return <Media type="video" {...video} getClip={getClip} key={key} />
       })}
     </ListWrap>
   ) : (

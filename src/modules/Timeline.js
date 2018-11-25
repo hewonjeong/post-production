@@ -24,7 +24,7 @@ const Timeline = ({ hasTracks }) => (
 
 const style = {
   timeline: { height: '100%', display: 'flex' },
-  aside: { width: 120, flex: 'none', paddingTop: 20 },
+  aside: { width: sizes.timeline.offset, flex: 'none', paddingTop: 20 },
   tracks: { flex: 1, position: 'relative', overflowX: 'auto' }
 }
 
