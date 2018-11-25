@@ -1,23 +1,18 @@
-import React, { memo, useState, useEffect, useRef } from 'react'
+import React, { memo } from 'react'
 import { DragSource } from 'react-dnd'
+import useWidth from '../hooks/useWidth'
 
 const Image = memo(({ src }) => <img src={src} alt="" style={style.image} />)
 
 const Media = ({ thumbnail, filename, duration, overlay, ...rest }) => {
+  const [width, ref] = useWidth()
   const { onClick, connectDragSource, isDragging } = rest
   const getStyle = () => ({ ...style.component, height: (width * 9) / 16 })
-  const component = useRef(null)
-  const [width, setWidth] = useState(0)
-
-  useEffect(() => {
-    const { width } = component.current.getBoundingClientRect()
-    setWidth(width)
-  })
 
   return (
-    <article ref={component} style={getStyle()} onClick={onClick}>
+    <article ref={ref} onClick={onClick}>
       {connectDragSource(
-        <div>
+        <div style={getStyle()}>
           <Image src={thumbnail} />
           {overlay ? (
             <p style={style.overlay}>{overlay}</p>

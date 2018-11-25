@@ -11,3 +11,8 @@
   color: white;
   cursor: default;
 }
+
+.hidden {
+  height: 0;
+  overflow: hidden;
+}
