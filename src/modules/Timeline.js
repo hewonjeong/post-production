@@ -12,16 +12,10 @@ const Timeline = ({ hasTracks }) => (
       <div style={{ height: sizes.clip.height }}>텍스트</div>
     </section>
     <section style={style.tracks}>
-      {hasTracks ? (
-        <>
-          <Track type="video" />
-          <Track type="audio" />
-          <Track type="text" />
-          <Bar />
-        </>
-      ) : (
-        '미디어 소스를 끌어다 놓으세요.'
-      )}
+      <Track type="video" />
+      <Track type="audio" />
+      <Track type="text" />
+      <Bar />
     </section>
   </div>
 )
@@ -29,7 +23,7 @@ const Timeline = ({ hasTracks }) => (
 const style = {
   timeline: { height: '100%', display: 'flex' },
   aside: { width: 120, flex: 'none' },
-  tracks: { position: 'relative', overflowX: 'auto' }
+  tracks: { flex: 1, position: 'relative', overflowX: 'auto' }
 }
 
 export default connect(({ timeline }) => ({

@@ -14,41 +14,45 @@ const Track = ({ type, clips, assets, zoom, total, width, ...rest }) => {
   const { connectDropTarget, isOver, canDrop } = rest
 
   return connectDropTarget(
-    <div style={{ ...style.track, width }}>
-      {Object.entries(clips).map(([key, clip]) => {
-        const renderVideoClip = () =>
-          assets[clip.videoKey].images
-            .filter((_, index) => !(index % (sizes.clip.width / zoom)))
-            .map((url, index) => (
-              <img src={url} alt="" height={sizes.clip.height} key={index} />
-            ))
+    <div style={style.track}>
+      <div style={style.backdrop} />
+      <div style={{ ...style.clips, width }}>
+        {Object.entries(clips).map(([key, clip]) => {
+          const renderVideoClip = () =>
+            assets[clip.videoKey].images
+              .filter((_, index) => !(index % (sizes.clip.width / zoom)))
+              .map((url, index) => (
+                <img src={url} alt="" height={sizes.clip.height} key={index} />
+              ))
 
-        const renderTextClip = () => (
-          <article style={{ width: '100%' }}>
-            <p style={style.text}>
-              <strong>{clip.text[0]}</strong>
-            </p>
-            <p style={style.text}>{clip.text[1]}</p>
-          </article>
-        )
+          const renderTextClip = () => (
+            <article style={{ width: '100%' }}>
+              <p style={style.text}>
+                <strong>{clip.text[0]}</strong>
+              </p>
+              <p style={style.text}>{clip.text[1]}</p>
+            </article>
+          )
 
-        const clipContent = cond([
-          [equals('video'), renderVideoClip],
-          [equals('text'), renderTextClip]
-        ])(type)
+          const clipContent = cond([
+            [equals('video'), renderVideoClip],
+            [equals('text'), renderTextClip]
+          ])(type)
 
-        return (
-          <Clip position={getPosition(clip, type, total)} key={key}>
-            {clipContent}
-          </Clip>
-        )
-      })}
+          return (
+            <Clip position={getPosition(clip, total)} key={key}>
+              {clipContent}
+            </Clip>
+          )
+        })}
+      </div>
     </div>
   )
 }
 
 const style = {
-  track: { position: 'relative' },
+  track: { position: 'relative', height: sizes.clip.height },
+  clips: { position: 'absolute' },
 
   clip: {
     position: 'absolute',
@@ -61,9 +65,18 @@ const style = {
   },
 
   text: {
-    overflow: ' hidden',
+    overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap'
+  },
+
+  backdrop: {
+    backgroundColor: 'black',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0
   }
 }
 
@@ -88,8 +101,7 @@ export default flow(
 )(Track)
 
 /* helper */
-const getPosition = ({ start, end }, type, total) => ({
+const getPosition = ({ start, end }, total) => ({
   left: (start * 100) / total + '%',
-  right: 100 - (end * 100) / total + '%',
-  top: ['video', 'audio', 'text'].indexOf(type) * sizes.clip.height
+  right: 100 - (end * 100) / total + '%'
 })
