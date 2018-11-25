@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { DropTarget } from 'react-dnd'
 import { cond, equals } from 'ramda'
+import flow from 'lodash/fp/flow'
 import sizes from '../constants/sizes'
 import { getLastEnd } from '../selector/getTotal'
 
@@ -8,40 +10,42 @@ const Clip = ({ position, children }) => (
   <div style={{ ...style.clip, ...position }}>{children}</div>
 )
 
-const Track = ({ type, clips, assets, zoom, total, width }) => (
-  <div style={{ ...style.track, width }}>
-    {Object.entries(clips).map(([key, clip]) => {
-      const clipContent = cond([
-        [
-          equals('video'),
-          () =>
-            assets[clip.videoKey].images
-              .filter((_, index) => !(index % (sizes.clip.width / zoom)))
-              .map((url, index) => (
-                <img src={url} alt="" height={sizes.clip.height} key={index} />
-              ))
-        ],
-        [
-          equals('text'),
-          () => (
-            <article style={{ width: '100%' }}>
-              <p style={style.text}>
-                <strong>{clip.text[0]}</strong>
-              </p>
-              <p style={style.text}>{clip.text[1]}</p>
-            </article>
-          )
-        ]
-      ])(type)
+const Track = ({ type, clips, assets, zoom, total, width, ...rest }) => {
+  const { connectDropTarget, isOver, canDrop } = rest
 
-      return (
-        <Clip position={getPosition(clip, type, total)} key={key}>
-          {clipContent}
-        </Clip>
-      )
-    })}
-  </div>
-)
+  return connectDropTarget(
+    <div style={{ ...style.track, width }}>
+      {Object.entries(clips).map(([key, clip]) => {
+        const renderVideoClip = () =>
+          assets[clip.videoKey].images
+            .filter((_, index) => !(index % (sizes.clip.width / zoom)))
+            .map((url, index) => (
+              <img src={url} alt="" height={sizes.clip.height} key={index} />
+            ))
+
+        const renderTextClip = () => (
+          <article style={{ width: '100%' }}>
+            <p style={style.text}>
+              <strong>{clip.text[0]}</strong>
+            </p>
+            <p style={style.text}>{clip.text[1]}</p>
+          </article>
+        )
+
+        const clipContent = cond([
+          [equals('video'), renderVideoClip],
+          [equals('text'), renderTextClip]
+        ])(type)
+
+        return (
+          <Clip position={getPosition(clip, type, total)} key={key}>
+            {clipContent}
+          </Clip>
+        )
+      })}
+    </div>
+  )
+}
 
 const style = {
   track: { position: 'relative' },
@@ -63,11 +67,25 @@ const style = {
   }
 }
 
-export default connect(({ assets, timeline, meta: { zoom } }, { type }) => {
-  const clips = timeline[type]
-  const total = getLastEnd(clips)
-  return { clips, assets, zoom, total, width: zoom * total }
-})(Track)
+const mediaTarget = {
+  drop: props => {
+    console.log(props)
+  }
+}
+
+const collect = (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver()
+})
+
+export default flow(
+  DropTarget('media', mediaTarget, collect),
+  connect(({ assets, timeline, meta: { zoom } }, { type }) => {
+    const clips = timeline[type]
+    const total = getLastEnd(clips)
+    return { clips, assets, zoom, total, width: zoom * total }
+  })
+)(Track)
 
 /* helper */
 const getPosition = ({ start, end }, type, total) => ({
