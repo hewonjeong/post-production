@@ -1,8 +1,9 @@
 import React from 'react'
-import Tab from '../layout/Tab'
-import Assets from '../modules/Assets'
 import effects from '../effects'
-import EffectList from '../modules/EffectList'
+import Tab from '../layout/Tab'
+import Assets from './Assets'
+import EffectList from './EffectList'
+import Export from './Export'
 
 const Panel = () => (
   <Tab
@@ -11,7 +12,8 @@ const Panel = () => (
       ...effects.map(({ type, name, list }) => ({
         name,
         component: <EffectList type={type} list={list} />
-      }))
+      })),
+      { name: '결과물', component: <Export /> }
     ]}
   />
 )
