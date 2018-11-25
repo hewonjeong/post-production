@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import VideoContext from 'videocontext'
 import * as metaActions from '../actions/metaActions'
+import * as recordActions from '../actions/recordActions'
 import getTotal from '../selector/getTotal'
 import filters from '../effects/filters'
 import transitionsList from '../effects/transitions'
@@ -11,10 +12,13 @@ import TextCanvas from './TextCanvas'
 const Canvas = ({ assets, timeline, transitions, meta, total, ...rest }) => {
   const { pause, setCurrent } = rest
   const [textCanvas, setTextCanvas] = useState({})
+  const [recordedBlobs, setBlobs] = useState([])
+  const [record, setRecord] = useState('idle')
   const { timestamp, isPlaying, current } = meta
   const canvasRef = useRef()
   const ctx = useRef()
   const raf = useRef()
+  const mediaRecorder = useRef()
 
   const init = () => {
     ctx.current = new VideoContext(canvasRef.current)
@@ -99,16 +103,51 @@ const Canvas = ({ assets, timeline, transitions, meta, total, ...rest }) => {
     () => {
       const next = isPlaying
         ? () => {
+            startRecord()
             syncCurrent()
             ctx.current.play()
           }
         : () => {
+            stopRecord()
             cancelSync()
             ctx.current.pause()
           }
       next()
     },
     [isPlaying]
+  )
+
+  const startRecord = () => {
+    setBlobs([])
+    setRecord('loading')
+    rest.setURL('')
+    const stream = canvasRef.current.captureStream(24)
+    const options = { mimeType: 'video/webm' }
+    mediaRecorder.current = new MediaRecorder(stream, options)
+    mediaRecorder.current.ondataavailable = event =>
+      event.data.size > 0 && handleDataAvailable(event.data)
+    mediaRecorder.current.start()
+  }
+
+  const stopRecord = () => {
+    mediaRecorder.current && mediaRecorder.current.stop()
+  }
+
+  const handleDataAvailable = blob => {
+    setBlobs([blob])
+    setRecord('success')
+  }
+
+  const getURL = () => {
+    const blob = new Blob(recordedBlobs, { type: 'video/webm' })
+    return URL.createObjectURL(blob)
+  }
+
+  useEffect(
+    () => {
+      record === 'success' && rest.setURL(getURL())
+    },
+    [record]
   )
 
   return (
@@ -132,5 +171,5 @@ export default connect(
     meta,
     total: getTotal(timeline)
   }),
-  dispatch => bindActionCreators(metaActions, dispatch)
+  dispatch => bindActionCreators({ ...metaActions, ...recordActions }, dispatch)
 )(Canvas)

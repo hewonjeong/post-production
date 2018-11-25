@@ -1,6 +1,27 @@
 import React from 'react'
-import Recorder from './Recorder'
+import { connect } from 'react-redux'
 
-const Export = ({ assets }) => !!Object.keys(assets).length && <Recorder />
+const Export = ({ url }) => (
+  <div style={style.component}>
+    {url ? (
+      <>
+        <video src={url} style={style.video} autoPlay loop controls />
+        <p>
+          <a href={url} download="video.webm" style={style.download}>
+            Download
+          </a>
+        </p>
+      </>
+    ) : (
+      'Recording...'
+    )}
+  </div>
+)
 
-export default Export
+const style = {
+  component: { padding: 16 },
+  video: { borderRadius: 4 },
+  download: { color: 'white', textDecoration: 'none', marginTop: 8 }
+}
+
+export default connect(({ record: { url } }) => ({ url }))(Export)
