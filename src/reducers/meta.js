@@ -5,6 +5,7 @@ const timestamp = (state = 0, action) => {
   switch (action.type) {
     case 'clip/add':
     case 'clip/edit':
+    case 'transition/add':
       return Date.now()
 
     default:
