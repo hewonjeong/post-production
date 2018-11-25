@@ -16,6 +16,11 @@ const Canvas = ({ assets, timeline, transitions, meta, total, ...rest }) => {
   const ctx = useRef()
   const raf = useRef()
 
+  const init = () => {
+    ctx.current = new VideoContext(canvasRef.current)
+    ctx.current.registerCallback('ended', stop)
+  }
+
   const stop = () => {
     pause()
     setCurrent(0)
@@ -34,31 +39,9 @@ const Canvas = ({ assets, timeline, transitions, meta, total, ...rest }) => {
 
   useEffect(
     () => {
-      ctx.current = new VideoContext(canvasRef.current)
-      ctx.current.registerCallback('ended', stop)
-    },
-    [canvasRef]
-  )
-
-  useEffect(
-    () => {
-      const next = isPlaying
-        ? () => {
-            syncCurrent()
-            ctx.current.play()
-          }
-        : () => {
-            cancelSync()
-            ctx.current.pause()
-          }
-      next()
-    },
-    [isPlaying]
-  )
-
-  useEffect(
-    () => {
       try {
+        init()
+
         const connectVideo = ([key, clip, transition]) => {
           const videoNode = ctx.current.video(assets[clip.videoKey].url)
           videoNode.start(clip.start)
@@ -110,6 +93,22 @@ const Canvas = ({ assets, timeline, transitions, meta, total, ...rest }) => {
       }
     },
     [timestamp, textCanvas]
+  )
+
+  useEffect(
+    () => {
+      const next = isPlaying
+        ? () => {
+            syncCurrent()
+            ctx.current.play()
+          }
+        : () => {
+            cancelSync()
+            ctx.current.pause()
+          }
+      next()
+    },
+    [isPlaying]
   )
 
   return (
